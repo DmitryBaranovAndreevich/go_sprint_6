@@ -69,6 +69,12 @@ func HandleUpload(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(result)
 
+	if err := os.MkdirAll("uploads", 0755); err != nil {
+		log.Printf("не удалось создать директорию: %v", err)
+		http.Error(w, "внутренняя ошибка", http.StatusInternalServerError)
+		return
+	}
+
 	root, err := os.OpenRoot("uploads")
 	if err != nil {
 		log.Printf("open upload directory error: %v", err)
