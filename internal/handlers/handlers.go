@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"io"
+	"json"
 	"log"
 	"net/http"
 	"os"
@@ -100,4 +101,16 @@ func HandleUpload(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "ошибка при записи файла", http.StatusInternalServerError)
 		return
 	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	w.WriteHeader(http.StatusOK)
+
+	_, err = io.WriteString(w, json.Marshal(result))
+	if err != nil {
+		log.Printf("write response error: %v", err)
+		http.Error(w, "ошибка при отправке ответа", http.StatusInternalServerError)
+		return
+	}
+
 }
